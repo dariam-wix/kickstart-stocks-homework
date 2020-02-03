@@ -16,18 +16,11 @@ export default class CompanyService {
   async getSymbol(userInput: string) {
     return axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${userInput}&apikey=${this.key}`)
     .then(function (response) {
-      if(response.data.bestMatches){
         const result = {
           symbol: response.data.bestMatches[0]['1. symbol'],
           name: response.data.bestMatches[0]['2. name']
         };
-        return result
-      } else {
-        return {
-          symbol: "-",
-          name: "Company not found"
-        };
-      }
+        return result;
     })
     .catch(function (error) {
       console.log(error);
@@ -41,14 +34,9 @@ export default class CompanyService {
   async getPrice(symbol: string) {
     return axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${this.key}`)
     .then(function (response) {
-      if(response.data['Global Quote']){
-        return response.data['Global Quote']['05. price'];
-      }else{
-        return "0";
-      }
+       return response.data['Global Quote']['05. price'] === undefined ? "0" : response.data['Global Quote']['05. price'];
     })
     .catch(function (error) {
-      console.log(error);
       return "0";
     });
   }
